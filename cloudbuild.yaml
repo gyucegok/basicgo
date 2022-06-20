@@ -1,0 +1,50 @@
+steps:
+# This step runs the unit tests on the app
+- name: golang:1.18
+  id: Test
+  entrypoint: /bin/bash
+  args: 
+    - -c
+    - |
+      go build main.go && go build main.go & > build.log
+
+# This step builds the container image.
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '-t'
+  - 'europe-west1-docker.pkg.dev/gyucegok-alto/dock/basicgo:${COMMIT_SHA}'
+  - './src'
+
+# This step pushes the image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'europe-west1-docker.pkg.dev/gyucegok-alto/dock/basicgo:${COMMIT_SHA}'
+
+# We have pushed the container image with the GIT commit SHA, we also
+# need to hydrate our kubernetes manifests with the same SHA in order being
+# able to pull it in deploy time
+- name: 'bash'
+  args:
+  - 'sed'
+  - '-i'
+  - 'kubernetes-manifests/basicgodeploy.yaml'
+  - '-e'
+  - 's/COMMITSHA/${COMMIT_SHA}/g'
+
+# This step creates a release in Cloud Deploy, promoting the image 
+# between environments will be done further in Cloud Deploy
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: gcloud
+  args:
+    [
+      "deploy", "releases", "create", "rel-${SHORT_SHA}",
+      "--delivery-pipeline", "basicgo-deploy-pipe",
+      "--region", "europe-west1",
+      "--annotations", "commitId=${REVISION_ID}",
+      "--images", "basicgo=europe-west1-docker.pkg.dev/gyucegok-alto/dock/basicgo:${COMMIT_SHA}"
+    ]
+

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basicgo
+  labels:
+    app: basicgo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basicgo
+  template:
+    metadata:
+      labels:
+        app: basicgo
+    spec:
+      containers:
+        - name: basicgo
+          image: europe-west1-docker.pkg.dev/gyucegok-alto/dock/basicgo:COMMITSHA
+          ports:
+          - name: http-server
+            containerPort: 80
+          env:
+          - name: PORT
+            value: "80"
