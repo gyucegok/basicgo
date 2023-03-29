@@ -1,29 +1,29 @@
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
- name: deploy-pipe
+ name: mydeploypipe
 description: main application pipeline
 serialPipeline:
  stages:
- - targetId: sandbox
+ - targetId: testauto
    profiles: []
- - targetId: autopilot
+ - targetId: prodauto
    profiles: []
 ---
 
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
 metadata:
- name: sandbox
-description: development cluster
+ name: testauto
+description: autopilot test cluster
 gke:
- cluster: projects/gyucegok-alto/locations/europe-west1-b/clusters/sandbox
+ cluster: projects/gyucegok-alto/locations/us-east1/clusters/testauto
 ---
 
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
 metadata:
- name: autopilot
-description: production cluster
+ name: prodauto
+description: autopilot prod cluster
 gke:
- cluster: projects/gyucegok-alto/locations/us-central1/clusters/autopilot
+ cluster: projects/gyucegok-alto/locations/us-east1/clusters/prodauto
