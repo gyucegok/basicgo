@@ -43,7 +43,7 @@ steps:
     [
       "deploy", "releases", "create", "rel-${SHORT_SHA}",
       "--delivery-pipeline", "mydeploypipe",
-      "--region", "europe-west1",
+      "--region", "us-east1",
       "--annotations", "commitId=${REVISION_ID}",
       "--images", "basicgo=europe-west1-docker.pkg.dev/gyucegok-alto/dock/basicgo:${COMMIT_SHA}"
     ]
