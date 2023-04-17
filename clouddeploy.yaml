@@ -1,7 +1,7 @@
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
- name: mydeploypipe
+ name: go-gke-pipe
 description: main application pipeline
 serialPipeline:
  stages:
@@ -9,6 +9,16 @@ serialPipeline:
    profiles: []
  - targetId: prodauto
    profiles: []
+   strategy:
+      canary:
+        runtimeConfig:
+          kubernetes:
+            serviceNetworking:
+              service: "basicgo"
+              deployment: "basicgo"
+        canaryDeployment:
+          percentages: [25,50]
+          verify: false
 ---
 
 apiVersion: deploy.cloud.google.com/v1
@@ -25,5 +35,6 @@ kind: Target
 metadata:
  name: prodauto
 description: autopilot prod cluster
+requireApproval: true
 gke:
  cluster: projects/gyucegok-alto/locations/us-east1/clusters/prodauto
