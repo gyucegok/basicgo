@@ -6,7 +6,7 @@ steps:
   args: 
     - -c
     - |
-      go build main.go && go build main.go & > build.log
+      go build main.go && go run main.go & > build.log
 
 # This step builds the container image.
 - name: 'gcr.io/cloud-builders/docker'
