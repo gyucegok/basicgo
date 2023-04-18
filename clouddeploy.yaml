@@ -26,6 +26,7 @@ kind: Target
 metadata:
   name: prod-multi
 description: production clusters
+requireApproval: true
 multiTarget:
   targetIds: [prod1-auto, prod2-auto]
 ---
@@ -44,7 +45,6 @@ kind: Target
 metadata:
  name: prod1-auto
 description: autopilot prod cluster
-requireApproval: true
 gke:
  cluster: projects/gyucegok-alto/locations/us-east1/clusters/prod1-auto
 ---
